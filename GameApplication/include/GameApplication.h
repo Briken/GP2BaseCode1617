@@ -11,6 +11,12 @@ class GameApplication:public NonCopyable
 public:
 	//Constructor
 	GameApplication();
+	
+	//Window Creation
+	void createWindow(const string& windowTitle,
+		const unsigned int width, const unsigned int height,
+		const unsigned int windowFlags = 0);
+	
 	//Virtual Deconstructor
 	virtual ~GameApplication();
 
@@ -19,6 +25,10 @@ public:
 
 	//Basically runs our game
 	void run();
+
+	//Controls quitting the game
+	void OnQuit();
+
 protected:
 	ProgramOptions m_Options;
 
@@ -26,6 +36,10 @@ protected:
 	unsigned int m_WindowHeight;
 	unsigned int m_WindowCreationFlags;
 	string m_WindowTitle;
+
+	bool m_bIsRunning;
+
+	SDL_Window * m_pWindow;
 
 	void parseConfig(int args,char * arg[]);
 };
