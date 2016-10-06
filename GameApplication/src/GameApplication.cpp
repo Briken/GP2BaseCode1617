@@ -1,5 +1,4 @@
 #include "GameApplication.h"
-#include "utils/Log.h"
 
 GameApplication::GameApplication()
 {
@@ -7,18 +6,20 @@ GameApplication::GameApplication()
 	m_WindowWidth=640;
 	m_WindowHeight=480;
 	m_WindowCreationFlags=0;
-  CREATELOG("log.txt");
+	CREATELOG("log.txt");
+	m_bIsActive=false;
+	m_bIsRunning=false;
+  m_WindowTitle="Game";
 }
 
 GameApplication::~GameApplication()
 {
-  CLOSELOG();
-	destroy();
+
 }
 
 void GameApplication::createWindow(const string& windowTitle,const unsigned int width, const unsigned int height, const unsigned int windowFlags)
 {
-  LOG(INFO,"Window Created %s Width -%d Height -%d",windowTitle.c_str(),width,height);
+  LOG(INFO,"Window Created %s Width - %d Height - %d",windowTitle.c_str(),width,height);
 	//Create a window
 	m_pWindow = SDL_CreateWindow(
 		windowTitle.c_str(),             // window title
@@ -43,22 +44,26 @@ void GameApplication::parseConfig(int args,char * arg[])
   LOG(INFO,"Settings Parsed\n%s",ss.str().c_str());
   ss.str( std::string());
   ss.clear();
+
 	//parse command line arguments into keyvalue pairs, this should
 	//overide options in config files
   CommandLineParser commandLineParser=CommandLineParser(args,arg);
   commandLineParser.parse(m_Options);
   ss<<m_Options;
   LOG(INFO,"Command Line Parsed\n%s",ss.str().c_str());
+  ss.str( std::string());
+  ss.clear();
 }
 
 
 bool GameApplication::init(int args,char * arg[])
 {
   parseConfig(args,arg);
-	//ChangeWorkingDirectory();
+
 	//Controls the game loop
 	m_bIsRunning = true;
 
+  LOG(INFO,"%s","Initialising SDL");
 	// init everyting - SDL, if it is nonzero we have a problem
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
@@ -67,52 +72,40 @@ bool GameApplication::init(int args,char * arg[])
 		return false;
 	}
 
-	//Initialise SDL Image
-	int	imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
-	int	returnInitFlags = IMG_Init(imageInitFlags);
-	if (((returnInitFlags)&	(imageInitFlags)) != imageInitFlags)	{
-    LOG(ERROR,"SDL Image Can't be Initialised %s",IMG_GetError());
-		return false;
-	}
+	m_WindowWidth=m_Options.getOptionAsInt("WindowWidth");
+	m_WindowHeight=m_Options.getOptionAsInt("WindowHeight");
+  m_WindowTitle=m_Options.getOption("WindowTitle");
+	createWindow(m_WindowTitle,m_WindowWidth,m_WindowHeight,m_WindowCreationFlags);
 
-	//Initialise SDL TTF
-	if (TTF_Init() == -1)	{
-    LOG(ERROR,"SDL TTF Can't be Initialised %s",TTF_GetError());
-		return false;
-	}
-  m_WindowWidth=m_Options.getOptionAsInt("WindowWidth");
-  m_WindowHeight=m_Options.getOptionAsInt("WindowHeight");
-	createWindow(m_Options.getOption("WindowTitle"),m_WindowWidth,m_WindowHeight,m_WindowCreationFlags);
-	//Init Scene
-	initScene();
+
+	m_bIsActive=true;
 	return true;
 }
 
-void GameApplication::initScene()
+void GameApplication::OnQuit()
 {
-}
-
-void GameApplication::update()
-{
-
-}
-
-void GameApplication::render()
-{
-}
-
-void GameApplication::onRenderGUI()
-{
-
-}
-
-void GameApplication::destroy()
-{
-	// clean up, reverse order!!!
+	//set our boolean which controls the loop to false
+	m_bIsRunning = false;
 	SDL_DestroyWindow(m_pWindow);
-	IMG_Quit();
-	TTF_Quit();
 	SDL_Quit();
+	CLOSELOG();
+}
+
+void GameApplication::OnMaximize()
+{
+  LOG(INFO,"%s","Maximize");
+}
+
+void GameApplication::OnMinimize()
+{
+  LOG(INFO,"%s","Minimize");
+  m_bIsActive=false;
+}
+
+void GameApplication::OnRestored()
+{
+  LOG(INFO,"%s","Restored");
+  m_bIsActive=true;
 }
 
 void GameApplication::run()
@@ -124,16 +117,52 @@ void GameApplication::run()
 		//While we still have events in the queue
 		while (SDL_PollEvent(&event)) {
 			//Get event type
-			if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
-				//set our boolean which controls the loop to false
-				m_bIsRunning = false;
+			if (event.type == SDL_QUIT) {
+
+				OnQuit();
+			}
+			if (event.type == SDL_KEYDOWN)
+			{
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+				{
+					OnQuit();
+				}
+				if (event.key.keysym.sym == SDLK_f)
+				{
+					if (SDL_SetWindowFullscreen(m_pWindow, SDL_WINDOW_FULLSCREEN) == -1)
+					{
+						LOG(ERROR, "Can't Maximize %s", SDL_GetError());
+					}
+				}
+			}
+			if (event.type == SDL_WINDOWEVENT)
+			{
+				switch (event.window.event)
+				{
+				case SDL_WINDOWEVENT_CLOSE:
+				{
+					OnQuit();
+					break;
+				}
+
+				case SDL_WINDOWEVENT_MINIMIZED:
+				{
+					OnMinimize();
+					break;
+				}
+
+				case SDL_WINDOWEVENT_MAXIMIZED:
+				{
+					OnMaximize();
+					break;
+				}
+				case SDL_WINDOWEVENT_RESTORED:
+				{
+					OnRestored();
+					break;
+				}
+				}
 			}
 		}
-		//init Scene
-		update();
-		//render
-		render();
-		//Call swap so that our GL back buffer is displayed
-
 	}
 }
