@@ -27,6 +27,19 @@ public:
 
 	virtual void OnRestored();
 
+	virtual void Render();
+
+	void OnBeginRender();
+
+	void OnEndRender();
+
+	void InitGraphics();
+
+	void SetViewport(int width, int height);
+
+	virtual void Update();
+
+
 	//Basically runs our game
 	void run();
 
@@ -34,6 +47,7 @@ public:
 protected:
 	//SDL Windows
 	SDL_Window * m_pWindow;
+	SDL_GLContext m_GLcontext;
 
 	bool m_bIsRunning;
 	bool m_bIsActive;
