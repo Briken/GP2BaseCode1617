@@ -41,6 +41,10 @@ public:
 
 	void setViewport(int width, int height);
 
+	virtual void InitScene();
+
+	virtual void DestroyScene();
+
 
 
 protected:
