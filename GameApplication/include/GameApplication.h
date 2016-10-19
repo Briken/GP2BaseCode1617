@@ -29,6 +29,24 @@ public:
 	//Controls quitting the game
 	void OnQuit();
 
+	void OnBeginRender();
+
+	void OnEndRender();
+
+	virtual void Render();
+
+	virtual void Update();
+
+	void InitGraphics();
+
+	void setViewport(int width, int height);
+
+	virtual void InitScene();
+
+	virtual void DestroyScene();
+
+
+
 protected:
 	ProgramOptions m_Options;
 
@@ -36,6 +54,9 @@ protected:
 	unsigned int m_WindowHeight;
 	unsigned int m_WindowCreationFlags;
 	string m_WindowTitle;
+
+	SDL_GLContext m_GLcontext;
+
 
 	bool m_bIsRunning;
 
