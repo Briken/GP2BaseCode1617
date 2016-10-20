@@ -28,15 +28,15 @@ using namespace std;
 
 //maths headers
 
-#include <glm/glm.hpp>
+#include <C:/dev/glm/glm/glm.hpp>
 
 using namespace glm;
 
 
-#include <glm/gtc/matrix_transform.hpp>
+#include <C:/dev/glm/glm/gtc/matrix_transform.hpp>
 
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include <C:/dev/glm/glm/gtc/type_ptr.hpp>
+#include <C:/dev/glm/glm/gtx/string_cast.hpp>
 
 
 #endif
