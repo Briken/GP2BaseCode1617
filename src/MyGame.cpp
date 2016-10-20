@@ -3,11 +3,14 @@
 struct Vertex
 {
 	float x, y, z;
+	float r, g, b, a;
+
 };
 
 
 const std::string ASSET_PATH = "assets";
 const std::string SHADER_PATH = "/shaders";
+const std::string TEXTURE_PATH = "/textures";
 
 
 MyGame::MyGame()
@@ -27,14 +30,19 @@ void MyGame::InitScene()
 	GameApplication::InitScene();
 	Vertex verts[] = 
 	{
-		{-0.5f, -0.5f, 0.0f},
-		{0.5f, -0.5f, 0.0f},
-		{0.0f, 0.5f, 0.0f}
+		{-0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
+		{0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f},
+		{0.5f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f},
+
+		{-0.5f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f, 1.0f },
+		{0.5f, 0.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f},
+		{-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f }
+
 	};
 
 	glGenBuffers(1, &m_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, 3*sizeof(Vertex), verts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 6*sizeof(Vertex), verts, GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);
@@ -42,6 +50,9 @@ void MyGame::InitScene()
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(3*sizeof(float)));
 
 
 	GLuint vertexShaderProgram = 0;
@@ -61,6 +72,17 @@ void MyGame::InitScene()
 
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
+
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
+	m_Texture = loadTextureFromFile(texturePath);
+	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glGenSamplers(1, &m_Sampler);
+	glSamplerParameteri(m_Sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glSamplerParameteri(m_Sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glSamplerParameteri(m_Sampler, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glSamplerParameteri(m_Sampler, GL_TEXTURE_WRAP_T, GL_CLAMP);
 }
 
 void MyGame::DestroyScene()
@@ -69,6 +91,9 @@ void MyGame::DestroyScene()
 
 	glDeleteProgram(m_ShaderProgram);
 	
+	glDeleteSamplers(1, &m_Sampler);
+	glDeleteTextures(1, &m_Texture);
+
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 
@@ -88,7 +113,7 @@ void MyGame::Render()
 		mat4 MVP = m_ProjMatrix*m_ViewMatrix*m_ModelMatrix;
 		glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, glm::value_ptr(MVP));
 	}
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void MyGame::Update()

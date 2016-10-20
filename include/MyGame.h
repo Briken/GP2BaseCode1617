@@ -2,7 +2,7 @@
 #define _MyGame_H
 
 #include "GameApplication.h"
-#include "Shader.h"
+
 
 class MyGame:public GameApplication
 {
@@ -20,6 +20,9 @@ public:
 	mat4 m_ModelMatrix;
 
 	GLuint m_ShaderProgram;
+	GLuint m_Texture;
+
+	GLuint m_Sampler;
 
 private:
 	GLuint m_VBO;

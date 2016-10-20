@@ -48,6 +48,14 @@ bool GameApplication::init(int args,char * arg[])
 		return false;
 	}
 
+	int imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+	int returnInitFlags = IMG_Init(imageInitFlags);
+
+	if (((returnInitFlags) & (imageInitFlags)) != imageInitFlags)
+	{
+		LOG(ERROR, "SDL_Image Init %s", IMG_GetError());
+	}
+
 	m_WindowWidth = m_Options.getOptionAsInt("WindowWidth");
 	m_WindowHeight = m_Options.getOptionAsInt("WindowHeight");
 	m_WindowTitle = m_Options.getOption("WindowTitle");
@@ -239,5 +247,6 @@ void GameApplication::OnQuit()
 	DestroyScene();
 	SDL_GL_DeleteContext(m_GLcontext);
 	SDL_DestroyWindow(m_pWindow);
+	IMG_Quit();
 	SDL_Quit();
 }
