@@ -4,7 +4,7 @@ struct Vertex
 {
 	float x, y, z;
 	float r, g, b, a;
-
+	float u, v;
 };
 
 
@@ -30,14 +30,14 @@ void MyGame::InitScene()
 	GameApplication::InitScene();
 	Vertex verts[] = 
 	{
-		{-0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
-		{0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f},
-		{0.5f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f},
+		{-0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f, 1.0f,		0,0},
+		{0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f,		1,0},
+		{0.5f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f,		1,1},
 
-		{-0.5f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f, 1.0f },
-		{0.5f, 0.5f, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f},
-		{-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f }
-
+		{-0.5f, 0.5f, 0.0f,			1.0f, 0.0f, 0.0f, 1.0f,		0,1},
+		{0.5f, 0.5f, 0.0f,			0.0f, 1.0f, 0.0f, 1.0f,		1,1},
+		{-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f, 1.0f,		0,0}
+		
 	};
 
 	glGenBuffers(1, &m_VBO);
@@ -49,10 +49,13 @@ void MyGame::InitScene()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(3*sizeof(float)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(3 * sizeof(float)));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(7 * sizeof(float)));
 
 
 	GLuint vertexShaderProgram = 0;
@@ -60,7 +63,7 @@ void MyGame::InitScene()
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	
 	GLuint fragmentShaderProgram = 0;
-	std::string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+	std::string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 
 	m_ShaderProgram = glCreateProgram();
@@ -113,6 +116,17 @@ void MyGame::Render()
 		mat4 MVP = m_ProjMatrix*m_ViewMatrix*m_ModelMatrix;
 		glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, glm::value_ptr(MVP));
 	}
+
+	glBindSampler(0, m_Sampler);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	GLint textureLocation = glGetUniformLocation(m_ShaderProgram, "diffuseSampler");
+	
+	if (textureLocation != NULL)
+	{
+		glUniform1i(textureLocation, 0);
+	}
+
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
