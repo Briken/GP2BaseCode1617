@@ -29,7 +29,11 @@ void GameObject::OnUpdate()
 	m_ScaleMatrix = scale(m_Scale);
 	m_TranslationMatrix = translate(m_Position);
 
+
 	m_ModelMatrix = m_TranslationMatrix*m_RotationMatrix*m_ScaleMatrix;
+	//ChangePosition();
+	//ChangeRotation();
+	//ChangeScale();
 }
 
 void GameObject::OnRender(mat4 & view, mat4 & projection)
@@ -125,4 +129,40 @@ void GameObject::CopyVertexData(Vertex * pVertex, int numberOfVertices)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
 		(void**)offsetof(Vertex, texCoords));
 
+}
+
+void GameObject::ChangeRotation()
+{
+	m_Rotation.z += 0.01f;
+}
+
+void GameObject::ChangeScale()
+{
+	m_Scale += 0.01f;
+}
+
+void GameObject::ChangePosition()
+{
+	m_Position += 0.001f;
+}
+
+void GameObject::SetPos(vec3& position)
+{
+	m_Position.x = position.x + 10;
+	m_Position.y = position.y + 10;
+}
+
+vec3 GameObject::GetPos()
+{
+	return vec3(m_Position);
+}
+
+void GameObject::MoveRight(float moveAmount)
+{
+	m_Position.x += moveAmount;
+}
+
+void GameObject::MoveLeft(float moveAmount)
+{
+	m_Position.x -= moveAmount;
 }

@@ -25,6 +25,7 @@ private:
 	mat4 m_ProjMatrix;
 
 	GameObject* m_TestObject;
+	GameObject* m_NewObject;
 	/*mat4 m_ModelMatrix;
 
 	GLuint m_Texture;

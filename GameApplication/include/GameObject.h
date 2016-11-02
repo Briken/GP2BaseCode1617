@@ -23,7 +23,16 @@ public:
 	void LoadShaders(const string& vsFileName, const string& fsFileName);
 	
 	void CopyVertexData(Vertex *pVertex, int numberOfVertices);
+	
+	void ChangeRotation();
+	void ChangeScale();
+	void ChangePosition();
 
+	void SetPos(vec3& position);
+	vec3 GetPos();
+
+	void MoveRight(float moveAmount);
+	void MoveLeft(float moveAmount);
 private:
 
 	GLuint m_VBO;
