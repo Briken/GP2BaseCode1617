@@ -33,6 +33,8 @@ public:
 
 	void MoveRight(float moveAmount);
 	void MoveLeft(float moveAmount);
+
+	void Move(vec3 vector);
 private:
 
 	GLuint m_VBO;

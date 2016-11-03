@@ -144,6 +144,10 @@ bool GameApplication::init(int args,char * arg[])
 	return true;
 }
 
+void GameApplication::OnKeyDown(SDL_Keycode code)
+{
+}
+
 void GameApplication::initScene()
 {
 
@@ -191,7 +195,7 @@ void GameApplication::update()
 void GameApplication::OnBeginRender()
 {
   //Set the clear colour(background)
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  glClearColor( 0.5f, 0.0f, 0.7f, 0.0f );
   //clear the colour and depth buffer
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
@@ -221,6 +225,7 @@ void GameApplication::run()
 			}
 			if (event.type == SDL_KEYDOWN)
 			{
+				OnKeyDown(event.key.keysym.sym);
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 				{
 					OnQuit();

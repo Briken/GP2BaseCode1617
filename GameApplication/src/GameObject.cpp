@@ -148,8 +148,7 @@ void GameObject::ChangePosition()
 
 void GameObject::SetPos(vec3& position)
 {
-	m_Position.x = position.x + 10;
-	m_Position.y = position.y + 10;
+	m_Position = position;
 }
 
 vec3 GameObject::GetPos()
@@ -165,4 +164,9 @@ void GameObject::MoveRight(float moveAmount)
 void GameObject::MoveLeft(float moveAmount)
 {
 	m_Position.x -= moveAmount;
+}
+
+void GameObject::Move(vec3 vector)
+{
+	m_Position += vector;
 }

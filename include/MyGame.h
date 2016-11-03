@@ -13,6 +13,7 @@ public:
 	void update();
 	void initScene();
 	void destroyScene();
+	void OnKeyDown(SDL_Keycode code);
 private:
 	//GLuint m_VBO;
 	//GLuint m_VAO;

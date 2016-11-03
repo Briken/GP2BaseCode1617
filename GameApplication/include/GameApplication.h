@@ -20,6 +20,8 @@ public:
 	//This is where all major subsystems are created
 	virtual bool init(int args,char * arg[]);
 
+	virtual void OnKeyDown(SDL_Keycode code);
+
 	//called when we want to destroy the game, this will delete all major
 	//subsystem in reverse order
 	virtual void OnQuit();

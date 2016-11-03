@@ -36,8 +36,8 @@ void MyGame::initScene()
 	
 	
 	m_NewObject = new GameObject();
-	vec3 tempPos = m_TestObject->GetPos();
-	m_NewObject->SetPos(tempPos);
+	
+	m_NewObject->SetPos(vec3 (0.0f,2.0f,0.0f));
 	m_NewObject->LoadShaders(vsPath, fsPath);
 	texturePath = ASSET_PATH + TEXTURE_PATH + "/texture1.png";
 	m_NewObject->LoadTexture(texturePath);
@@ -51,6 +51,32 @@ void MyGame::destroyScene()
 	m_NewObject->OnDestroy();
 }
 
+void MyGame::OnKeyDown(SDL_Keycode code)
+{
+	vec3 left = vec3 (-0.1, 0.0, 0.0);
+	vec3 right = vec3 (0.1, 0.0, 0.0);
+	vec3 up = vec3(0.0, 0.1, 0.0);
+	vec3 down = vec3(0.0, -0.1, 0.0);
+	if (code == SDLK_LEFT)
+	{
+		m_TestObject->Move(left);
+	}
+	if (code == SDLK_RIGHT)
+	{
+		
+		m_TestObject->Move(right);
+	}
+	if (code == SDLK_UP)
+	{
+		m_TestObject->Move(up);
+	}
+	if (code == SDLK_DOWN)
+	{
+		m_TestObject->Move(down);
+	}
+	
+}
+
 void MyGame::update()
 {
 	GameApplication::update();
@@ -60,14 +86,17 @@ void MyGame::update()
 	m_TestObject->OnUpdate();
 	m_NewObject->OnUpdate();
 
-	if (SDL_KEYDOWN == SDLK_LEFT)
+	if (SDL_KEYDOWN == SDL_SCANCODE_LEFT) //SDLK_LEFT)
 	{ 
 		m_TestObject->MoveLeft(5.0f);
+//		render();
 	}
-	if (SDL_KEYDOWN == SDLK_RIGHT)
+	if (SDL_KEYDOWN == SDL_SCANCODE_RIGHT) //SDLK_RIGHT)
 	{
 		m_TestObject->MoveRight(5.0f);
+//		render();
 	}
+	
 }
 
 void MyGame::render()
