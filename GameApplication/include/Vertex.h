@@ -10,4 +10,5 @@ struct Vertex
 	vec4 colour;
 	vec2 texCoords;
 };
+
 #endif

@@ -22,7 +22,7 @@ public:
 	void LoadTexture(const string& filename);
 	void LoadShaders(const string& vsFileName, const string& fsFileName);
 	
-	void CopyVertexData(Vertex *pVertex, int numberOfVertices);
+	void CopyVertexData(Vertex *pVertex, int numberOfVertices, int numberOfIndices, unsigned int *indices);
 	
 	void ChangeRotation();
 	void ChangeScale();
@@ -39,6 +39,7 @@ private:
 
 	GLuint m_VBO;
 	GLuint m_VAO;
+	GLuint m_EBO;
 
 	GLuint m_ShaderProgram;
 
@@ -58,6 +59,7 @@ private:
 	mat4 m_ScaleMatrix;
 
 	int m_NumberofVerts;
+	int m_NumberOfIndices;
 
 protected:
 
